@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GHASKOT by ChatGPT</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      background: #f2f2f2;
+      text-align: center;
+    }
+
+    header {
+      background: #ff4d4d;
+      color: white;
+      padding: 20px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .menu {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .item {
+      background: white;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 12px;
+      width: 180px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .qty-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      gap: 10px;
+    }
+
+    button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #ff4d4d;
+      color: white;
+      font-size: 16px;
+    }
+
+    .addBtn {
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .cart {
+      background: white;
+      display: inline-block;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      min-width: 320px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  🍽️ GHASKOT by ChatGPT
+</header>
+
+<p>Use + / - to choose quantity for each item</p>
+
+<div class="menu">
+
+  <div class="item">🍔 Burger $5
+    <div class="qty-controls">
+      <button onclick="changeQty('burger', -1)">-</button>
+      <span id="burgerQty">0</span>
+      <button onclick="changeQty('burger', 1)">+</button>
+    </div>
+    <button class="addBtn" onclick="add('Burger', 5, 'burger')">Add</button>
+  </div>
+
+  <div class="item">🍟 Fries $3
+    <div class="qty-controls">
+      <button onclick="changeQty('fries', -1)">-</button>
+      <span id="friesQty">0</span>
+      <button onclick="changeQty('fries', 1)">+</button>
+    </div>
+    <button class="addBtn" onclick="add('Fries', 3, 'fries')">Add</button>
+  </div>
+
+  <div class="item">🍕 Pizza $8
+    <div class="qty-controls">
+      <button onclick="changeQty('pizza', -1)">-</button>
+      <span id="pizzaQty">0</span>
+      <button onclick="changeQty('pizza', 1)">+</button>
+    </div>
+    <button class="addBtn" onclick="add('Pizza', 8, 'pizza')">Add</button>
+  </div>
+
+  <div class="item">🧀 Cheese Sticks $4
+    <div class="qty-controls">
+      <button onclick="changeQty('cheese', -1)">-</button>
+      <span id="cheeseQty">0</span>
+      <button onclick="changeQty('cheese', 1)">+</button>
+    </div>
+    <button class="addBtn" onclick="add('Cheese Sticks', 4, 'cheese')">Add</button>
+  </div>
+
+  <div class="item">🍩 Donut $3
+    <div class="qty-controls">
+      <button onclick="changeQty('donut', -1)">-</button>
+      <span id="donutQty">0</span>
+      <button onclick="changeQty('donut', 1)">+</button>
+    </div>
+    <button class="addBtn" onclick="add('Donut', 3, 'donut')">Add</button>
+  </div>
+
+  <div class="item">🥗 Salad $5
+    <div class="qty-controls">
+      <button onclick="changeQty('salad', -1)">-</button>
+      <span id="saladQty">0</span>
+      <button onclick="changeQty('salad', 1)">+</button>
+    </div>
+    <button class="addBtn" onclick="add('Salad', 5, 'salad')">Add</button>
+  </div>
+
+  <div class="item">🍭 Lollipop $1
+    <div class="qty-controls">
+      <button onclick="changeQty('lollipop', -1)">-</button>
+      <span id="lollipopQty">0</span>
+      <button onclick="changeQty('lollipop', 1)">+</button>
+    </div>
+    <button class="addBtn" onclick="add('Lollipop', 1, 'lollipop')">Add</button>
+  </div>
+
+</div>
+
+<div class="cart">
+  <h3>Your Cart</h3>
+  <div id="cart">Empty</div>
+  <h3>Total: $<span id="total">0</span></h3>
+
+  <button onclick="checkout()">Checkout</button>
+  <button onclick="clearCart()">Clear</button>
+</div>
+
+<script>
+
+let cart = [];
+let total = 0;
+
+let qty = {
+  burger:0, fries:0, pizza:0, cheese:0, donut:0, salad:0, lollipop:0
+};
+
+function changeQty(item, val) {
+  qty[item] += val;
+  if (qty[item] < 0) qty[item] = 0;
+  document.getElementById(item + "Qty").innerText = qty[item];
+}
+
+function add(name, price, key) {
+  if (qty[key] === 0) {
+    alert("Set quantity first!");
+    return;
+  }
+
+  let cost = qty[key] * price;
+
+  cart.push({ name, qty: qty[key], cost });
+  total += cost;
+
+  qty[key] = 0;
+  document.getElementById(key + "Qty").innerText = 0;
+
+  updateCart();
+}
+
+function updateCart() {
+  let c = document.getElementById("cart");
+
+  if (cart.length === 0) {
+    c.innerHTML = "Empty";
+  } else {
+    c.innerHTML = cart.map(i =>
+      `${i.name} x${i.qty} = $${i.cost}`
+    ).join("<br>");
+  }
+
+  document.getElementById("total").innerText = total;
+}
+
+function checkout() {
+  if (cart.length === 0) {
+    alert("Cart is empty!");
+    return;
+  }
+  alert("🍽️ Order placed!\nTotal: $" + total);
+}
+
+function clearCart() {
+  cart = [];
+  total = 0;
+
+  for (let k in qty) {
+    qty[k] = 0;
+    let el = document.getElementById(k + "Qty");
+    if (el) el.innerText = 0;
+  }
+
+  updateCart();
+}
+
+</script>
+
+</body>
+</html>
